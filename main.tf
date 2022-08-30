@@ -29,6 +29,15 @@ resource "aws_instance" "app" {
 
   root_block_device {
     volume_size = var.disk_size
+    volume_type = "gp3"
+    iops        = 3000
+    throughput  = 125
+    encrypted   = true
+  }
+
+  metadata_options {
+    http_endpoint = "enabled"
+    http_tokens   = "required"
   }
 
   tags = {
