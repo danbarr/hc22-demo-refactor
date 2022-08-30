@@ -20,32 +20,14 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"] # Canonical
 }
 
-resource "aws_instance" "app" {
-  ami           = data.aws_ami.ubuntu.id
+module "ec2_webserver" {
+  source  = "app.terraform.io/dbarr-org/ec2-webserver/aws"
+  version = "0.1.0"
+
+  name          = "app-instance"
+  ami_id        = data.aws_ami.ubuntu.id
   instance_type = var.instance_type
+  disk_size     = var.disk_size
   user_data     = file("${path.module}/user_data.sh")
-
-  vpc_security_group_ids = [aws_security_group.app.id]
-
-  root_block_device {
-    volume_size = var.disk_size
-  }
-
-  tags = {
-    "Name" = "app-instance"
-  }
-}
-
-resource "aws_security_group" "app" {
-  name        = "app-instance-sg"
-  description = "Web server access"
-
-  ingress {
-    description = "HTTP access"
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-    self        = true
-  }
+  public_facing = true
 }
