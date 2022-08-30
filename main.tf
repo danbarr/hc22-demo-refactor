@@ -22,7 +22,7 @@ data "aws_ami" "ubuntu" {
 
 module "ec2_webserver" {
   source  = "app.terraform.io/dbarr-org/ec2-webserver/aws"
-  version = "0.1.0"
+  version = "0.2.0"
 
   name          = "app-instance"
   ami_id        = data.aws_ami.ubuntu.id
